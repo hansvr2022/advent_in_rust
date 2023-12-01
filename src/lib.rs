@@ -1,9 +1,7 @@
-
 #[cfg(test)]
 mod tests {
     use std::collections::HashMap;
     use std::fs;
-    use super::*;
 
 
     #[test]
@@ -20,6 +18,15 @@ mod tests {
             ("seven", 7),
             ("eight", 8),
             ("nine", 9),
+            ("1", 1),
+            ("2", 2),
+            ("3", 3),
+            ("4", 4),
+            ("5", 5),
+            ("6", 6),
+            ("7", 7),
+            ("8", 8),
+            ("9", 9),
         ]);
 
         for line in file.lines() {
@@ -28,28 +35,20 @@ mod tests {
 
             for string_digit in &string_digits {
                 let string_to_match = *string_digit.0;
-                for matched in line.match_indices(string_to_match) {
-                    if first_digit.1 == 0 || matched.0 <= first_digit.0 {
-                        first_digit = (matched.0, *string_digit.1)
-                    }
-                    if last_digit.1 == 0 || matched.0 >= last_digit.0 {
-                        last_digit = (matched.0, *string_digit.1)
-                    }
-                }
-            }
-
-            for (position, character) in line.char_indices() {
-                if character.is_numeric() {
-                    if first_digit.1 == 0 || position <= first_digit.0 {
-                        first_digit = (position, character.to_digit(10).expect("not a digit"))
-                    }
-                    if last_digit.1 == 0 || position >= last_digit.0 {
-                        last_digit = (position, character.to_digit(10).expect("not a digit"))
+                let matched: Vec<_> = line.match_indices(string_to_match).collect();
+                if !matched.is_empty() {
+                    for filtered_matched in [matched.first().expect("not found"), matched.last().expect("not found")] {
+                        if first_digit.1 == 0 || filtered_matched.0 <= first_digit.0 {
+                            first_digit = (filtered_matched.0, *string_digit.1)
+                        }
+                        if last_digit.1 == 0 || filtered_matched.0 >= last_digit.0 {
+                            last_digit = (filtered_matched.0, *string_digit.1)
+                        }
                     }
                 }
             }
 
-            total = total + (first_digit.1 * 10) + last_digit.1;
+            total += (first_digit.1 * 10) + last_digit.1;
         }
 
         println!("total: {}", total)
