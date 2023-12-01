@@ -37,13 +37,13 @@ mod tests {
                 let string_to_match = *string_digit.0;
                 let matched: Vec<_> = line.match_indices(string_to_match).collect();
                 if !matched.is_empty() {
-                    for filtered_matched in [matched.first().expect("not found"), matched.last().expect("not found")] {
-                        if first_digit.1 == 0 || filtered_matched.0 <= first_digit.0 {
-                            first_digit = (filtered_matched.0, *string_digit.1)
-                        }
-                        if last_digit.1 == 0 || filtered_matched.0 >= last_digit.0 {
-                            last_digit = (filtered_matched.0, *string_digit.1)
-                        }
+                    let first = matched.first().expect("no error");
+                    let last = matched.last().expect("no error");
+                    if first_digit.1 == 0 || first.0 <= first_digit.0 {
+                        first_digit = (first.0, *string_digit.1)
+                    }
+                    if last_digit.1 == 0 || last.0 >= last_digit.0 {
+                        last_digit = (last.0, *string_digit.1)
                     }
                 }
             }
