@@ -1,3 +1,5 @@
+mod day_two;
+
 #[cfg(test)]
 mod tests {
     use std::collections::HashMap;
@@ -30,8 +32,8 @@ mod tests {
         ]);
 
         for line in file.lines() {
-            let mut first_digit: (usize, u32) = (usize::MIN, 0);
-            let mut last_digit: (usize, u32) = (usize::MIN, 0);
+            let mut first_digit: (usize, u32) = (0, 0);
+            let mut last_digit: (usize, u32) = (0, 0);
 
             for string_digit in &string_digits {
                 let string_to_match = *string_digit.0;
@@ -39,10 +41,10 @@ mod tests {
                 if !matched.is_empty() {
                     let first = matched.first().expect("no error");
                     let last = matched.last().expect("no error");
-                    if first_digit.1 == 0 || first.0 <= first_digit.0 {
+                    if first_digit.0 == 0 || first.0 <= first_digit.0 {
                         first_digit = (first.0, *string_digit.1)
                     }
-                    if last_digit.1 == 0 || last.0 >= last_digit.0 {
+                    if last.0 >= last_digit.0 {
                         last_digit = (last.0, *string_digit.1)
                     }
                 }
