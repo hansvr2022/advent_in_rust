@@ -1,10 +1,10 @@
 mod day_two;
+mod day_four;
 
 #[cfg(test)]
 mod tests {
     use std::collections::HashMap;
     use std::fs;
-
 
     #[test]
     fn day_one() {
