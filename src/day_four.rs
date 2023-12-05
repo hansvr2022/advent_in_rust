@@ -5,7 +5,6 @@ mod day_four {
     #[test]
     fn test() {
         let lines = include_str!("../resources/input_day_four.txt");
-        let mut card_number = 1;
         let mut cards: Vec<Card> = Vec::new();
         for line in lines.lines() {
             let numbers: Vec<_> = line.split(":").last().unwrap().split("|").collect();
@@ -13,7 +12,6 @@ mod day_four {
             let winning_numbers: Vec<_> = numbers[1].trim().split(" ").filter(|x| !x.is_empty()).map(|x| u32::from_str(x).unwrap()).collect();
             let card = Card { ticket_numbers, winning_numbers, owned: 1 };
             cards.push(card);
-            card_number += 1;
         }
         let mut total_cards = 0;
         for i in 0..cards.len() {
@@ -25,8 +23,10 @@ mod day_four {
             }
             for j in 0..matches {
                 let index = i + j + 1;
-                let new_value = cards[index].owned + cards[i].owned;
-                cards[index].owned = new_value;
+                if index < cards.len() {
+                    let new_value = cards[index].owned + cards[i].owned;
+                    cards[index].owned = new_value;
+                }
             }
 
 
