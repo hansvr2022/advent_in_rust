@@ -53,30 +53,25 @@ mod day_five {
             }
         }
 
-        println!("seeds: {:?}", seeds);
-        let ranges: Vec<_> = all_the_mappers.values().map(|x| x.first().unwrap()).map(|x| x.range.start).collect();
-        let deltas: Vec<_> = all_the_mappers.values().map(|x| x.first().unwrap()).map(|x| x.delta).zip(ranges).collect();
-        println!("mappers: {:?}", deltas);
-
-        let results: Vec<_> = seeds.par_iter()
-            .map(|x| whoop(x, &all_the_mappers, "seed-to-soil")).flatten()
-            .map(|x| whoop(&x, &all_the_mappers, "soil-to-fertilizer")).flatten()
-            .map(|x| whoop(&x, &all_the_mappers, "fertilizer-to-water")).flatten()
-            .map(|x| whoop(&x, &all_the_mappers, "water-to-light")).flatten()
-            .map(|x| whoop(&x, &all_the_mappers, "light-to-temperature")).flatten()
-            .map(|x| whoop(&x, &all_the_mappers, "temperature-to-humidity")).flatten()
-            .map(|x| whoop(&x, &all_the_mappers, "humidity-to-location")).flatten().collect();
+        let results: Vec<_> = seeds.iter()
+            .map(|x| swap_with_mapper(x, all_the_mappers.get( "seed-to-soil").unwrap())).flatten()
+            .map(|x| swap_with_mapper(&x, all_the_mappers.get("soil-to-fertilizer").unwrap())).flatten()
+            .map(|x| swap_with_mapper(&x, all_the_mappers.get("fertilizer-to-water").unwrap())).flatten()
+            .map(|x| swap_with_mapper(&x, all_the_mappers.get("water-to-light").unwrap())).flatten()
+            .map(|x| swap_with_mapper(&x, all_the_mappers.get("light-to-temperature").unwrap())).flatten()
+            .map(|x| swap_with_mapper(&x, all_the_mappers.get("temperature-to-humidity").unwrap())).flatten()
+            .map(|x| swap_with_mapper(&x, all_the_mappers.get("humidity-to-location").unwrap())).flatten().collect();
 
         let smallest = results.iter().map(|t: &Range<i64>| t.start).min();
 
 
-        println!("lowest: {:?}", smallest);
+        println!("lowest: {:?}", smallest.unwrap());
     }
 
-    fn whoop(range: &Range<i64>, all_the_mappers: &HashMap<String, Vec<Mapper>>, key: &str) -> Vec<Range<i64>> {
+    fn swap_with_mapper(range: &Range<i64>, mappers: &Vec<Mapper>) -> Vec<Range<i64>> {
         let start = range.start;
         let end = range.end;
-        let mut result: Vec<_> = all_the_mappers.get(key).unwrap().iter()
+        let mut result: Vec<_> = mappers.iter()
             .filter(move |m| start <= m.range.end && end >= m.range.start)
             .map(move |m| (max(start, m.range.start) - m.delta)..(min(end, m.range.end) - m.delta)).collect();
         let min_result = result.iter().map(|x| x.start).min();
