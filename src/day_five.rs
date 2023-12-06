@@ -4,6 +4,7 @@ mod day_five {
     use std::collections::HashMap;
     use std::ops::Range;
     use std::str::FromStr;
+
     use rayon::iter::*;
 
     #[test]
@@ -19,13 +20,6 @@ mod day_five {
         all_the_mappers.insert(String::from("light-to-temperature"), Vec::new());
         all_the_mappers.insert(String::from("temperature-to-humidity"), Vec::new());
         all_the_mappers.insert(String::from("humidity-to-location"), Vec::new());
-        let keys = vec!["seed-to-soil",
-                        "soil-to-fertilizer",
-                        "fertilizer-to-water",
-                        "water-to-light",
-                        "light-to-temperature",
-                        "temperature-to-humidity",
-                        "humidity-to-location"];
 
 
         for line in lines {
@@ -64,7 +58,7 @@ mod day_five {
         let deltas: Vec<_> = all_the_mappers.values().map(|x| x.first().unwrap()).map(|x| x.delta).zip(ranges).collect();
         println!("mappers: {:?}", deltas);
 
-        let results: Vec<_> = seeds.iter()
+        let results: Vec<_> = seeds.par_iter()
             .map(|x| whoop(x, &all_the_mappers, "seed-to-soil")).flatten()
             .map(|x| whoop(&x, &all_the_mappers, "soil-to-fertilizer")).flatten()
             .map(|x| whoop(&x, &all_the_mappers, "fertilizer-to-water")).flatten()
@@ -84,17 +78,11 @@ mod day_five {
         let end = range.end;
         let mut result: Vec<_> = all_the_mappers.get(key).unwrap().iter()
             .filter(move |m| start <= m.range.end && end >= m.range.start)
-            .map(move |m| {
-                let new_range = (max(start, m.range.start) - m.delta)..(min(end, m.range.end) - m.delta);
-                if(start == 0) {
-                    println!("new range: {}-{}, delta: {}", new_range.start, new_range.end, m.delta)
-                }
-                return new_range;
-            }).collect();
+            .map(move |m| (max(start, m.range.start) - m.delta)..(min(end, m.range.end) - m.delta)).collect();
         let min_result = result.iter().map(|x| x.start).min();
         let max_result = result.iter().map(|x| x.end).max();
         if result.is_empty() {
-            return vec![start..end]
+            return vec![start..end];
         }
 
         return result;
