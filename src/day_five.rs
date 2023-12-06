@@ -74,8 +74,6 @@ mod day_five {
         let mut result: Vec<_> = mappers.iter()
             .filter(move |m| start <= m.range.end && end >= m.range.start)
             .map(move |m| (max(start, m.range.start) - m.delta)..(min(end, m.range.end) - m.delta)).collect();
-        let min_result = result.iter().map(|x| x.start).min();
-        let max_result = result.iter().map(|x| x.end).max();
         if result.is_empty() {
             return vec![start..end];
         }
