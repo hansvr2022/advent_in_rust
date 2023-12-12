@@ -71,7 +71,7 @@ mod day_five {
     fn swap_with_mapper(range: &Range<i64>, mappers: &Vec<Mapper>) -> Vec<Range<i64>> {
         let start = range.start;
         let end = range.end;
-        let mut result: Vec<_> = mappers.iter()
+        let result: Vec<_> = mappers.iter()
             .filter(move |m| start <= m.range.end && end >= m.range.start)
             .map(move |m| (max(start, m.range.start) - m.delta)..(min(end, m.range.end) - m.delta)).collect();
         if result.is_empty() {
