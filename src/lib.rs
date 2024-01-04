@@ -4,6 +4,8 @@ mod day_five;
 mod day_six;
 mod day_seven;
 mod day_thirteen;
+mod day_fourteen;
+mod day_eight;
 
 #[cfg(test)]
 mod tests {
